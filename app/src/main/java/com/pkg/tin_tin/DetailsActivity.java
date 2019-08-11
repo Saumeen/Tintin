@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    EditText selectDate;
+    private EditText selectDate;
     private int mYear, mMonth, mDay;
     private TextInputEditText name, address, mobileno;
     private Button submit;
@@ -60,15 +60,12 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth1) {
                 if (firebaseAuth1.getCurrentUser() == null) {
-                    //Toast.makeText(MainActivity.this,"in Listner "+ firebaseAuth1.getCurrentUser().toString(),Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(DetailsActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
-
             }
         };
-
         firebaseUser = firebaseAuth.getCurrentUser();
         db =FirebaseFirestore.getInstance();
         selectDate.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +74,6 @@ public class DetailsActivity extends AppCompatActivity {
                 dateSelection();
             }
         });
-
         submit = findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,19 +95,14 @@ public class DetailsActivity extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     QuerySnapshot qs = task.getResult();
                                     List<DocumentSnapshot> list = qs.getDocuments();
-
                                     updateData(list.get(0).getId());
                                 }
                             }
                         });
-
                 Intent intent = new Intent(DetailsActivity.this, HomeActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-            }
-        }
-        });
-
+            } } });
     }
 
     public static boolean isEmpty(TextInputEditText textInputEditText) {
@@ -124,34 +115,28 @@ public class DetailsActivity extends AppCompatActivity {
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(DetailsActivity.this,
                 new DatePickerDialog.OnDateSetListener() {
 
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
-
                         selectDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-
                     }
                 }, mYear, mMonth, mDay);
         datePickerDialog.show();
-
     }
-    public void updateData(String id){
 
+
+    public void updateData(String id){
         dataname = name.getText().toString();
         dataaddress = address.getText().toString();
         datamobilno = mobileno.getText().toString();
         databirthday = selectDate.getText().toString();
-
         maplist.put("Name",dataname);
         maplist.put("Adddress",dataaddress);
         maplist.put("MobileNo",datamobilno);
         maplist.put("birthday",databirthday);
-
         documentReference = db.collection("users").document(id);
         documentReference.update(maplist).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -166,33 +151,4 @@ public class DetailsActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-//    public void updateData() {
-//        db.collection("users")
-//                .whereEqualTo("Email", FirebaseAuth.getInstance().getCurrentUser().getEmail())
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            QuerySnapshot qs = task.getResult();
-//                            if (qs.isEmpty()) {
-//
-//                                Log.d(TAG,"empty");
-//                                // intent.putExtra("user",firebaseUser);
-//
-//
-//                            } else {
-//                               Log.d(TAG,qs.toString());
-//                            }
-//
-//
-//                        } else {
-//                            Log.d(TAG, "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-//
-//    }
 }

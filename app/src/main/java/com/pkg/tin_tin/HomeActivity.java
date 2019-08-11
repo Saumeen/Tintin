@@ -133,6 +133,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_edit) {
 
         } else if (id == R.id.nav_feedback) {
+            feedBack();
 
         } else if (id == R.id.nav_share) {
 
@@ -173,5 +174,10 @@ public class HomeActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void feedBack(){
+        Intent intent = new Intent(HomeActivity.this,FeedbackActivity.class);
+        startActivity(intent);
     }
 }

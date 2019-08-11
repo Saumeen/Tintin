@@ -21,4 +21,8 @@
     <string name="details_mobile">Mobile no</string>
     <string name="details_birthday">Birthday</string>
     <string name="submit">Submit</string>
+
+    <string name="feedback_sub">Subject</string>
+    <string name="feedback_desc">Description</string>
+
 </resources>
