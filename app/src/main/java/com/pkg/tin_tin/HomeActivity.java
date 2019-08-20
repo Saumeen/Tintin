@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -26,19 +27,22 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-
+    private RecyclerView recycler_view;
     private FirebaseUser firebaseUser;
     protected String TAG = "HomeActivity";
     private  FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleSignInClient googleSignInClient;
     private GoogleApiClient googleApiClient;
-
+    private FirebaseFirestore db;
+   
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class HomeActivity extends AppCompatActivity
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        View hView =  navigationView.getHeaderView(0);
+        View hView = navigationView.getHeaderView(0);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -64,30 +68,36 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-
-
-        firebaseAuth= FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser()==null){
-            Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+        firebaseAuth = FirebaseAuth.getInstance();
+        if (firebaseAuth.getCurrentUser() == null) {
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }
-        authStateListener=new FirebaseAuth.AuthStateListener(){
+        authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth1) {
-                if(firebaseAuth1.getCurrentUser()==null){
+                if (firebaseAuth1.getCurrentUser() == null) {
                     //Toast.makeText(MainActivity.this,"in Listner "+ firebaseAuth1.getCurrentUser().toString(),Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(HomeActivity.this,LoginActivity.class);
+                    Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
 
             }
         };
-
-
-
+        db = FirebaseFirestore.getInstance();
     }
+    
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        
+    }
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -129,8 +139,12 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_add) {
-
+            addMenu();
+        }
+        else if(id==R.id.nav_tiffinadd){
+             addTiffin();               
         } else if (id == R.id.nav_edit) {
+            editData();
 
         } else if (id == R.id.nav_feedback) {
             feedBack();
@@ -140,7 +154,7 @@ public class HomeActivity extends AppCompatActivity
         } else if(id == R.id.nav_logout){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-// 2. Chain together various setter methods to set the dialog characteristics
+            // 2. Chain together various setter methods to set the dialog characteristics
             builder.setMessage("Are you sure ?").setTitle("Logout");
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
@@ -176,8 +190,23 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    private void editData() {
+        Intent intent = new Intent(HomeActivity.this,EditDataActivity.class);
+        startActivity(intent);
+    }
+
+    private void addTiffin() {
+        Intent intent = new Intent(HomeActivity.this,TiffinMenuActivity.class);
+        startActivity(intent);
+    }
+
     public void feedBack(){
         Intent intent = new Intent(HomeActivity.this,FeedbackActivity.class);
+        startActivity(intent);
+    }
+
+    public void addMenu(){
+        Intent intent = new Intent(HomeActivity.this, HomeMenuActivity.class);
         startActivity(intent);
     }
 }
