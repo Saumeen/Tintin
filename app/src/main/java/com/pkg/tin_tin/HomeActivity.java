@@ -3,9 +3,12 @@ package com.pkg.tin_tin;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -14,20 +17,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +53,10 @@ public class HomeActivity extends AppCompatActivity
     private GoogleSignInClient googleSignInClient;
     private GoogleApiClient googleApiClient;
     private FirebaseFirestore db;
+    private TextView name,mobileno,addres;
+    private ArrayList<MenuData> menuDataArrayList;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private HomeMenuRecyclerViewAdapter adapter;
    
     
 
@@ -66,7 +82,10 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-
+        name = findViewById(R.id.home_card_name);
+        mobileno = findViewById(R.id.home_card_mobile);
+        addres = findViewById(R.id.home_card_address);
+        swipeRefreshLayout = findViewById(R.id.swipeRefereshlayout);
 
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) {
@@ -86,9 +105,135 @@ public class HomeActivity extends AppCompatActivity
 
             }
         };
+        firebaseUser = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+        layoutauthentication();
+        setData();
+        Refresh();
     }
-    
+
+    private void Refresh() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                Log.d("Data---","Referesh");
+                    menuDataArrayList.clear();
+                    setData();
+            }
+        });
+    }
+
+
+    private void setData() {
+        getUser();
+    }
+
+    private void getUser() {
+
+        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail())
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    QuerySnapshot qs = task.getResult();
+                    List<DocumentSnapshot> list = qs.getDocuments();
+                    //               loadMenuData(list.get(0).getId());
+                    loadData(list.get(0).getId());
+                    loadMenuData(list.get(0).getId());
+                }
+            }
+        });
+    }
+
+    private void loadData(String id) {
+        db.collection("SupplierUsers").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    name.setText("Name : "+documentSnapshot.getString("Name"));
+                    addres.setText("Address : "+documentSnapshot.getString("Adddress"));
+                    mobileno.setText("Mobile No : "+documentSnapshot.getString("MobileNo" +
+                            "")
+                    );
+
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    private void layoutauthentication() {
+
+        menuDataArrayList = new ArrayList<>();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recycler_view = findViewById(R.id.home_recyclerview);
+        recycler_view.setLayoutManager(linearLayoutManager);
+        linearLayoutManager.setReverseLayout(false);
+        linearLayoutManager.setSmoothScrollbarEnabled(true);
+
+    }
+
+//    private void loadDataFromFirebase() {
+//        getUser();
+//
+//    }
+
+//    private void getUser() {
+//        db.collection("users").whereEqualTo("Email",firebaseUser.getEmail())
+//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if(task.isSuccessful()){
+//                    QuerySnapshot qs = task.getResult();
+//                    List<DocumentSnapshot> list = qs.getDocuments();
+//                    //               loadMenuData(list.get(0).getId());
+//                    loadMenuData(list.get(0).getId());
+//                }
+//            }
+//        });
+//    }
+
+    private void loadMenuData(String id) {
+        final Query query  = db.collection("SupplierUsers").document(id).collection("Menu");
+//
+//        final FirestoreRecyclerOptions<MenuData> options = new FirestoreRecyclerOptions.Builder<MenuData>().setQuery(query,MenuData.class).build();
+//
+//        Log.d("IN--",options.getSnapshots().toArray().length+"");
+//        firebaseAdapter = new MenuFirebaseAdapter(options);
+//        recycler_view.setAdapter(firebaseAdapter);
+        query.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+
+
+                            MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
+                                    documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
+                                    ,documentSnapshot.getString("Quantity"));
+                            menuDataArrayList.add(menuData);
+                            //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataArrayList);
+                            adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
+
+                            recycler_view.setAdapter(adapter);
+                        }
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),"Fail to Load", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     @Override
     protected void onStart(){

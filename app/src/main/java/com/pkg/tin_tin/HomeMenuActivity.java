@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
@@ -39,7 +42,8 @@ public class HomeMenuActivity extends AppCompatActivity {
     private GoogleSignInClient googleSignInClient;
     private GoogleApiClient googleApiClient;
     private FirebaseFirestore db;
-    private TextInputEditText tiffinmenu,homemenu,Quantity,cost;
+    private TextInputEditText tiffinmenu,Quantity,cost;
+    private MultiAutoCompleteTextView homemenu;
     private Switch sw;
     private Button submit;
     private Map<String,Object> datamap;
@@ -79,6 +83,16 @@ public class HomeMenuActivity extends AppCompatActivity {
             }
         };
 
+        String menudata[] ={"Dal","Bhat","PauBhaji","PaniPuri","Roti","Chapati","Khichdi","Kadhi"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menudata);
+        homemenu = findViewById(R.id.homemenu);
+        homemenu.setThreshold(1);
+        homemenu.setAdapter(adapter);
+        homemenu.setTokenizer(new SpaceTokenizer());
+        homemenu.setTextColor(Color.BLACK);
+
+
         firebaseUser = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
 
@@ -109,10 +123,11 @@ public class HomeMenuActivity extends AppCompatActivity {
             }
         });
 
+
     }
     public void addMenu(){
 
-        db.collection("users").whereEqualTo("Email",firebaseUser.getEmail())
+        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail())
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -135,7 +150,7 @@ public class HomeMenuActivity extends AppCompatActivity {
         datamap.put("Quantity",Quantiydata);
         datamap.put("Type",lunchdinner);
 
-        db.collection("users").document(id).collection("HomeMenu").add(datamap)
+        db.collection("SupplierUsers").document(id).collection("Menu").add(datamap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {

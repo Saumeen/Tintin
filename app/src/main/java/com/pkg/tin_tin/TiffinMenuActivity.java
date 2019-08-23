@@ -3,10 +3,18 @@ package com.pkg.tin_tin;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.accessibilityservice.GestureDescription;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -23,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,22 +41,36 @@ public class TiffinMenuActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private FirebaseFirestore db;
-    private TextInputEditText menu,cost;
+    private TextInputEditText cost;
     private Button addmore,submit;
     private RadioGroup radioGroup;
     private Map<String,Object> dataMap;
     private String halffull;
+    private ListView listView;
+    private MultiAutoCompleteTextView menu;
+
+    private ArrayList<HashMap<String,String>> menulist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tiffin_menu);
-        menu = findViewById(R.id.tiffinmenu);
+
         cost = findViewById(R.id.tiffincost);
         submit= findViewById(R.id.tiffin_submit);
         addmore = findViewById(R.id.tiffin_addmore);
         radioGroup = findViewById(R.id.radiogroup);
         dataMap = new HashMap<>();
+
+        String menudata[] ={"Dal","Bhat","PauBhaji","PaniPuri","Roti","Chapati","Khichdi","Kadhi"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menudata);
+        menu = findViewById(R.id.tiffinmenu);
+
+        menu.setThreshold(1);
+        menu.setAdapter(adapter);
+        menu.setTokenizer(new SpaceTokenizer());
+        menu.setTextColor(Color.BLACK);
 
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) {
@@ -96,7 +119,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
 
     public void addMenu(){
 
-        db.collection("users").whereEqualTo("Email",firebaseUser.getEmail())
+        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail())
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -117,7 +140,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
         dataMap.put("Cost",costdata);
         dataMap.put("Type",halffull);
 
-        db.collection("users").document(id).collection("TiffinMenu").add(dataMap)
+        db.collection("SupplierUsers").document(id).collection("Menu").add(dataMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {

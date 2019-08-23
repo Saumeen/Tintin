@@ -17,16 +17,32 @@
         android:hint="Tiffin's Menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.155">
+        app:layout_constraintVertical_bias="0.143">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <!--<com.google.android.material.textfield.TextInputEditText-->
+            <!--android:id="@+id/tiffinmenu"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="51dp" />-->
+
+        <MultiAutoCompleteTextView
             android:id="@+id/tiffinmenu"
-            android:layout_width="match_parent"
-            android:layout_height="51dp" />
+            android:layout_width="397dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.241"/>
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <RadioGroup
         android:id="@+id/radiogroup"
@@ -76,7 +92,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.281">
+        app:layout_constraintVertical_bias="0.323">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiffincost"

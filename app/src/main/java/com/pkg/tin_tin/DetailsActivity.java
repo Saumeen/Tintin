@@ -88,7 +88,7 @@ public class DetailsActivity extends AppCompatActivity {
                     mobileno.setError("Please Enter Mobile No");
                 }
                 else{
-                db.collection("users").whereEqualTo("Email",firebaseUser.getEmail()).get()
+                db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail()).get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -137,7 +137,7 @@ public class DetailsActivity extends AppCompatActivity {
         maplist.put("Adddress",dataaddress);
         maplist.put("MobileNo",datamobilno);
         maplist.put("birthday",databirthday);
-        documentReference = db.collection("users").document(id);
+        documentReference = db.collection("SupplierUsers").document(id);
         documentReference.update(maplist).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

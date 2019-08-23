@@ -81,25 +81,11 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="211dp"
+                android:layout_marginStart="115dp"
                 android:layout_marginTop="149dp"
-                android:layout_marginEnd="69dp"
+                android:layout_marginEnd="165dp"
                 android:layout_marginBottom="11dp"
                 android:text="Remove" />
-
-            <Button
-                android:id="@+id/card_edit"
-                android:layout_width="123dp"
-                android:layout_height="40dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="35dp"
-                android:layout_marginTop="149dp"
-                android:layout_marginEnd="245dp"
-                android:layout_marginBottom="11dp"
-                android:text="Edit" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

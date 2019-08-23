@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public void checkAccount(final FirebaseUser firebaseUser){
-        db.collection("users")
+        db.collection("SupplierUsers")
                 .whereEqualTo("Email", firebaseUser.getEmail())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -177,7 +177,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     public void addAccount(FirebaseUser firebaseUser){
         user_fdb.put("Email",firebaseUser.getEmail());
-        db.collection("users")
+        db.collection("SupplierUsers")
                 .add(user_fdb)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
