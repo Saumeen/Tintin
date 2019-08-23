@@ -34,12 +34,18 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -56,7 +62,7 @@ public class HomeActivity extends AppCompatActivity
     private TextView name,mobileno,addres;
     private ArrayList<MenuData> menuDataArrayList;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private HomeMenuRecyclerViewAdapter adapter;
+    //private HomeMenuRecyclerViewAdapter adapter;
    
     
 
@@ -85,7 +91,7 @@ public class HomeActivity extends AppCompatActivity
         name = findViewById(R.id.home_card_name);
         mobileno = findViewById(R.id.home_card_mobile);
         addres = findViewById(R.id.home_card_address);
-        swipeRefreshLayout = findViewById(R.id.swipeRefereshlayout);
+       // swipeRefreshLayout = findViewById(R.id.swipeRefereshlayout);
 
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) {
@@ -109,7 +115,7 @@ public class HomeActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         layoutauthentication();
         setData();
-        Refresh();
+       // Refresh();
     }
 
     private void Refresh() {
@@ -147,6 +153,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadData(String id) {
+
         db.collection("SupplierUsers").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -200,45 +207,61 @@ public class HomeActivity extends AppCompatActivity
 //    }
 
     private void loadMenuData(String id) {
-        final Query query  = db.collection("SupplierUsers").document(id).collection("Menu");
-//
-//        final FirestoreRecyclerOptions<MenuData> options = new FirestoreRecyclerOptions.Builder<MenuData>().setQuery(query,MenuData.class).build();
-//
-//        Log.d("IN--",options.getSnapshots().toArray().length+"");
-//        firebaseAdapter = new MenuFirebaseAdapter(options);
-//        recycler_view.setAdapter(firebaseAdapter);
-        query.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
-
-
-                            MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
+        db.collection("SupplierUsers").document(id).collection("Menu")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                recycler_view.setAdapter(null);
+               // adapter=null;
+                for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots) {
+                    MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
                                     documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
                                     ,documentSnapshot.getString("Quantity"));
                             menuDataArrayList.add(menuData);
                             //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataArrayList);
-                            adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
-
-                            recycler_view.setAdapter(adapter);
-                        }
-                    }
-
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),"Fail to Load", Toast.LENGTH_LONG).show();
+                    Log.d("Log---", documentSnapshot.getString("Menu") + "");
+                }
+                HomeMenuRecyclerViewAdapter adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
+                adapter.notifyDataSetChanged();
+                recycler_view.setAdapter(adapter);
             }
         });
+
+
+//        final Query query  = db.collection("SupplierUsers").document(id).collection("Menu");
+//        query.get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//
+//                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
+//
+//
+//                            MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
+//                                    documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
+//                                    ,documentSnapshot.getString("Quantity"));
+//                            menuDataArrayList.add(menuData);
+//                            //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataArrayList);
+//                            adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
+//
+//                            recycler_view.setAdapter(adapter);
+//                            adapter.notifyDataSetChanged();
+//                        }
+//                    }
+//
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(getApplicationContext(),"Fail to Load", Toast.LENGTH_LONG).show();
+//            }
+//        });
     }
 
 
     @Override
     protected void onStart(){
         super.onStart();
-        
+       // setData();
     }
 
 

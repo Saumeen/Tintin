@@ -83,7 +83,11 @@ public class HomeMenuActivity extends AppCompatActivity {
             }
         };
 
-        String menudata[] ={"Dal","Bhat","PauBhaji","PaniPuri","Roti","Chapati","Khichdi","Kadhi"};
+        String menudata[] ={"Dal","Bhat","PauBhaji","PaniPuri","Roti","Chapati","Khichdi","Kadhi","Khaman Dhokla","Dabeli","Patra","DalDhokli","Kadhi","Roti","Chapati","Kachumber","Buttermilk","Wagharelo Rotlo",
+                "BhaatNaPoodla","Chivda","Nimki","Namkeen Shakarpara","Basundi","Shrikhand","FadaNiLapsi","DoodhPaak","Bhakri",
+                "Kobi","Karela","Bhindi","Rajma","Achar","ChanaDal","Aloo","Paneer","Nan","Dosa","Idli","PauBhaji","Thepla","Paratha",
+                "Aloo Paratha","DoodhiThepla","MethiThepla","BajraNoRotlo","Chinese","Dal Fry","Biriyani","ChholePuri","Dhokla",
+                "Rasgulla","Ladoos","MoongDal","Dudhi","Guvar","Methi Bhaji","PhoolKobi","Choli","Tindola","SevTameta"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menudata);
         homemenu = findViewById(R.id.homemenu);
