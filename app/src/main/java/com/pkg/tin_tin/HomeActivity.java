@@ -159,8 +159,10 @@ public class HomeActivity extends AppCompatActivity
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
+                    Log.d("TAG",documentSnapshot.getString("HouseFlatNo"));
                     name.setText("Name : "+documentSnapshot.getString("Name"));
-                    addres.setText("Address : "+documentSnapshot.getString("Adddress"));
+                    addres.setText("Address : "+documentSnapshot.getString("HouseFlatNo")+","+documentSnapshot.getString("Landmark")
+                    +","+documentSnapshot.getString("City"));
                     mobileno.setText("Mobile No : "+documentSnapshot.getString("MobileNo" +
                             "")
                     );
