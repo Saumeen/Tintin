@@ -22,62 +22,62 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.017">
-
-        <TextView
-            android:id="@+id/home_card_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:text="Name" />
+            android:layout_height="match_parent"
+            android:paddingLeft="7dp">
 
-        <TextView
-            android:id="@+id/home_card_mobile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="40dp"
-            android:text="Mobile NO" />
+            <TextView
+                android:id="@+id/home_card_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="serif"
+                android:text="Name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/home_card_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="60dp"
-            android:text="Address" />
+            <TextView
+                android:id="@+id/home_card_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="serif"
+                android:text="Mobile NO"
+                app:layout_constraintTop_toBottomOf="@+id/home_card_address"
+                tools:layout_editor_absoluteX="0dp" />
 
+            <TextView
+                android:id="@+id/home_card_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="serif"
+                android:text="Address"
+                app:layout_constraintTop_toBottomOf="@+id/home_card_name"
+                tools:layout_editor_absoluteX="0dp" />
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.circularreveal.cardview.CircularRevealCardView>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefereshlayout"
-        android:layout_width="393dp"
-        android:layout_height="527dp"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recyclerview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.727"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.901">
+        app:layout_constraintTop_toBottomOf="@+id/circularRevealCardView"
+        app:layout_constraintVertical_bias="0.754" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_recyclerview"
-            android:layout_width="376dp"
-            android:layout_height="535dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.727"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circularRevealCardView"
-            app:layout_constraintVertical_bias="0.754" />
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

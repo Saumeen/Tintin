@@ -11,26 +11,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditDataActivity"
+        <activity android:name=".RequestOrderActivity"></activity>
+        <activity
+            android:name=".EditDataActivity"
             android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/></activity>
-        <activity android:name=".TiffinMenuActivity"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
+            android:name=".TiffinMenuActivity"
             android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/></activity>
-        <activity android:name=".HomeMenuActivity"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
+            android:name=".HomeMenuActivity"
             android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/></activity>
-        <activity android:name=".FeedbackActivity"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
+            android:name=".FeedbackActivity"
             android:parentActivityName=".HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity"/></activity>
+                android:value=".HomeActivity" />
+        </activity>
         <activity android:name=".DetailsActivity" />
         <activity
             android:name=".HomeActivity"
