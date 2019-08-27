@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="149dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="189dp">
+
+            <TextView
+                android:id="@+id/requestorder_custname"
+                android:layout_width="383dp"
+                android:layout_height="38dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="21dp"
+                android:text="Customer Name" />
+
+            <TextView
+                android:id="@+id/requestorder_custphoneno"
+                android:layout_width="383dp"
+                android:layout_height="38dp"
+                android:layout_below="@+id/requestorder_custname"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="2dp"
+                android:text="Customer PhoneNo" />
+
+            <TextView
+                android:id="@+id/requestorder_type"
+                android:layout_width="383dp"
+                android:layout_height="38dp"
+                android:layout_below="@+id/requestorder_custphoneno"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="8dp"
+                android:text="Type" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
