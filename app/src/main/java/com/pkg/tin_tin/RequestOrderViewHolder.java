@@ -14,14 +14,14 @@ public class RequestOrderViewHolder extends RecyclerView.ViewHolder {
     }
     public void setCustname(String custname){
         TextView textView = view.findViewById(R.id.requestorder_custname);
-        textView.setText(custname);
+        textView.setText("Customer Name : "+custname);
     }
     public void setCustphone(String custphone){
         TextView textView = view.findViewById(R.id.requestorder_custphoneno);
-        textView.setText(custphone);
+        textView.setText("Customer MobileNo : "+custphone);
     }
     public void settype(String type){
         TextView textView = view.findViewById(R.id.requestorder_type);
-        textView.setText(type);
+        textView.setText("Type : "+type);
     }
 }

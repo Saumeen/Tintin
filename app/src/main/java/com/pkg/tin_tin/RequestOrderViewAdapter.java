@@ -20,7 +20,7 @@ public class RequestOrderViewAdapter extends RecyclerView.Adapter<RequestOrderVi
     @Override
     public RequestOrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater= LayoutInflater.from(parent.getContext());
-        View view=layoutInflater.inflate(R.layout.home_menu_card,parent,false);
+        View view=layoutInflater.inflate(R.layout.request_order_card,parent,false);
         return new RequestOrderViewHolder(view);
     }
 

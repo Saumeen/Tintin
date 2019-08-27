@@ -57,14 +57,10 @@ public class HomeActivity extends AppCompatActivity
     private  FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private GoogleSignInClient googleSignInClient;
-    private GoogleApiClient googleApiClient;
+
     private FirebaseFirestore db;
     private TextView name,mobileno,addres;
     private ArrayList<MenuData> menuDataArrayList;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    //private HomeMenuRecyclerViewAdapter adapter;
-   
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +72,8 @@ public class HomeActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(HomeActivity.this,RequestOrderActivity.class);
+                startActivity(intent);
             }
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -91,8 +87,6 @@ public class HomeActivity extends AppCompatActivity
         name = findViewById(R.id.home_card_name);
         mobileno = findViewById(R.id.home_card_mobile);
         addres = findViewById(R.id.home_card_address);
-       // swipeRefreshLayout = findViewById(R.id.swipeRefereshlayout);
-
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) {
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -108,28 +102,14 @@ public class HomeActivity extends AppCompatActivity
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
-
             }
         };
         firebaseUser = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         layoutauthentication();
         setData();
-       // Refresh();
-    }
 
-    private void Refresh() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                Log.d("Data---","Referesh");
-                    menuDataArrayList.clear();
-                    setData();
-            }
-        });
     }
-
 
     private void setData() {
         getUser();
@@ -153,7 +133,6 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadData(String id) {
-
         db.collection("SupplierUsers").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -163,8 +142,7 @@ public class HomeActivity extends AppCompatActivity
                     name.setText("Name : "+documentSnapshot.getString("Name"));
                     addres.setText("Address : "+documentSnapshot.getString("HouseFlatNo")+","+documentSnapshot.getString("Landmark")
                     +","+documentSnapshot.getString("City"));
-                    mobileno.setText("Mobile No : "+documentSnapshot.getString("MobileNo" +
-                            "")
+                    mobileno.setText("Mobile No : "+documentSnapshot.getString("MobileNo")
                     );
 
                 }
@@ -188,26 +166,6 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-//    private void loadDataFromFirebase() {
-//        getUser();
-//
-//    }
-
-//    private void getUser() {
-//        db.collection("users").whereEqualTo("Email",firebaseUser.getEmail())
-//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    QuerySnapshot qs = task.getResult();
-//                    List<DocumentSnapshot> list = qs.getDocuments();
-//                    //               loadMenuData(list.get(0).getId());
-//                    loadMenuData(list.get(0).getId());
-//                }
-//            }
-//        });
-//    }
-
     private void loadMenuData(String id) {
         db.collection("SupplierUsers").document(id).collection("Menu")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -228,46 +186,13 @@ public class HomeActivity extends AppCompatActivity
                 recycler_view.setAdapter(adapter);
             }
         });
-
-
-//        final Query query  = db.collection("SupplierUsers").document(id).collection("Menu");
-//        query.get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//
-//                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
-//
-//
-//                            MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
-//                                    documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
-//                                    ,documentSnapshot.getString("Quantity"));
-//                            menuDataArrayList.add(menuData);
-//                            //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataArrayList);
-//                            adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
-//
-//                            recycler_view.setAdapter(adapter);
-//                            adapter.notifyDataSetChanged();
-//                        }
-//                    }
-//
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(getApplicationContext(),"Fail to Load", Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
 
 
     @Override
     protected void onStart(){
         super.onStart();
-       // setData();
     }
-
-
-
 
     @Override
     public void onBackPressed() {
