@@ -26,12 +26,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class HomeMenuActivity extends AppCompatActivity {
 
@@ -50,6 +52,10 @@ public class HomeMenuActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private RadioButton lunch,dinner;
     private String lunchdinner;
+    private Map<String,Object> searchdata=new HashMap<>();
+    private String supid;
+    private Map<String,Object> docdata=new HashMap<>();
+    private Map<String,Object> nesteddata=new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,7 +150,7 @@ public class HomeMenuActivity extends AppCompatActivity {
         });
     }
 
-    public void addData(String id){
+    public void addData(final String id){
        String homemenudata = homemenu.getText().toString();
         String Quantiydata = Quantity.getText().toString();
         String costdata = cost.getText().toString();
@@ -157,7 +163,34 @@ public class HomeMenuActivity extends AppCompatActivity {
         db.collection("SupplierUsers").document(id).collection("Menu").add(datamap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
+            public void onSuccess(final DocumentReference documentReference) {
+                db.collection("SupplierUsers").document(id).get().addOnCompleteListener(
+                        new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                DocumentSnapshot ds= task.getResult();
+
+                                supid= ds.getString("Name");
+                                nesteddata.put("SupplierId",supid);
+                                nesteddata.put("MenuId",documentReference);
+
+                                StringTokenizer st = new StringTokenizer(homemenu.getText().toString()," ");
+                                while(st.hasMoreTokens()){
+                                    docdata.put(st.nextToken(), FieldValue.arrayUnion(nesteddata));
+
+                                    db.collection("SearchListData").document("data").update(docdata).addOnCompleteListener(
+                                            new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Toast.makeText(getApplicationContext(), "Searchlist created", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            }
+                                    );
+                                }
+                            }
+                        }
+                );
                 Toast.makeText(getApplicationContext(),"added succcessful",Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
