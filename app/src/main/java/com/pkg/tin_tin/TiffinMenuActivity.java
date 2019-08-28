@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -28,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class TiffinMenuActivity extends AppCompatActivity {
 
@@ -50,12 +53,21 @@ public class TiffinMenuActivity extends AppCompatActivity {
     private MultiAutoCompleteTextView menu;
 
     private ArrayList<HashMap<String,String>> menulist;
+    private DocumentReference referance;
+    //private Map<String,Map<String,Object>> searchdata;
+    private Map<String,Object> searchdata;
+    private String supid;
+    private Map<String,Object> docdata;
+    private Map<String,Object> nesteddata;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tiffin_menu);
+        searchdata = new HashMap<>();
 
+        docdata  =new HashMap<>();
+        nesteddata = new HashMap<>();
         cost = findViewById(R.id.tiffincost);
         submit= findViewById(R.id.tiffin_submit);
         addmore = findViewById(R.id.tiffin_addmore);
@@ -70,7 +82,6 @@ public class TiffinMenuActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menudata);
         menu = findViewById(R.id.tiffinmenu);
-
         menu.setThreshold(1);
         menu.setAdapter(adapter);
         menu.setTokenizer(new SpaceTokenizer());
@@ -114,12 +125,43 @@ public class TiffinMenuActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 addMenu();
                 addmore.setEnabled(true);
+              //  addSearchIndex();
                 Toast.makeText(getApplicationContext(),"submit",Toast.LENGTH_LONG).show();
             }
         });
+
     }
+
+//    private void addSearchIndex() {
+//        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail()).get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        QuerySnapshot qs = task.getResult();
+//                        List<DocumentSnapshot> list = qs.getDocuments();
+//                       // addInSearchList(list.get(0).getId());
+//                    }
+
+//                    private void addInSearchList(String id) {
+//                        db.collection("SupplierUsers").document(id).collection("Menu").whereEqualTo("Menu",menu.getText().toString()).get()
+//                                .addOnCompleteListener(
+//                                        new OnCompleteListener<QuerySnapshot>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                                QuerySnapshot qs = task.getResult();
+//                                                List<DocumentSnapshot> ds = qs.getDocuments();
+//
+//                                                db.collection("SearchList").add()
+//                                            }
+//                                        }
+//                                );
+//
+//                    }
+//                });
+//    }
 
     public void addMenu(){
 
@@ -136,7 +178,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
         });
     }
 
-    public void addData(String id){
+    public void addData(final String id){
         String menudata = menu.getText().toString();
         String costdata = cost.getText().toString();
 
@@ -144,10 +186,40 @@ public class TiffinMenuActivity extends AppCompatActivity {
         dataMap.put("Cost",costdata);
         dataMap.put("Type",halffull);
 
+
         db.collection("SupplierUsers").document(id).collection("Menu").add(dataMap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(final DocumentReference documentReference) {
+                        db.collection("SupplierUsers").document(id).get().addOnCompleteListener(
+                                new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        DocumentSnapshot ds= task.getResult();
+
+                                        supid= ds.getString("Name");
+                                        nesteddata.put("SupplierId",supid);
+                                        nesteddata.put("MenuId",documentReference);
+
+                                        StringTokenizer st = new StringTokenizer(menu.getText().toString()," ");
+                                        while(st.hasMoreTokens()){
+                                            docdata.put(st.nextToken(),FieldValue.arrayUnion(nesteddata));
+
+                                            db.collection("SearchListData").document("data").update(docdata).addOnCompleteListener(
+                                                    new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Toast.makeText(getApplicationContext(), "Searchlist created", Toast.LENGTH_SHORT).show();
+
+                                                        }
+                                                    }
+                                            );
+                                        }
+                                    }
+                                }
+                        );
+
+
                         Toast.makeText(getApplicationContext(),"added succcessful",Toast.LENGTH_LONG).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -158,6 +230,35 @@ public class TiffinMenuActivity extends AppCompatActivity {
         });
 
     }
-
-
+//
+//    private void addSearchFirebase(final DocumentReference referance) {
+//        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail())
+//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if(task.isSuccessful()){
+//                    QuerySnapshot qs = task.getResult();
+//                    List<DocumentSnapshot> list = qs.getDocuments();
+//                    addToFirebase(list.get(0).getId());
+//                }
+//            }
+//
+//            private void addToFirebase(String id) {
+//                String supplierid = referance.getId();
+//                String menuid = id;
+//                searchdata.put("SupplierId",supplierid);
+//                searchdata.put("MenuId",menuid);
+//                db.collection("SearchList").add(searchdata).addOnCompleteListener(
+//                        new OnCompleteListener<DocumentReference>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<DocumentReference> task) {
+//
+//                            }
+//                        }
+//                );
+//            }
+//        });
+//    }
+//
+//
 }
