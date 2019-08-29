@@ -230,35 +230,4 @@ public class TiffinMenuActivity extends AppCompatActivity {
         });
 
     }
-//
-//    private void addSearchFirebase(final DocumentReference referance) {
-//        db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail())
-//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    QuerySnapshot qs = task.getResult();
-//                    List<DocumentSnapshot> list = qs.getDocuments();
-//                    addToFirebase(list.get(0).getId());
-//                }
-//            }
-//
-//            private void addToFirebase(String id) {
-//                String supplierid = referance.getId();
-//                String menuid = id;
-//                searchdata.put("SupplierId",supplierid);
-//                searchdata.put("MenuId",menuid);
-//                db.collection("SearchList").add(searchdata).addOnCompleteListener(
-//                        new OnCompleteListener<DocumentReference>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<DocumentReference> task) {
-//
-//                            }
-//                        }
-//                );
-//            }
-//        });
-//    }
-//
-//
 }
