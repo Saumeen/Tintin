@@ -179,7 +179,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
     }
 
     public void addData(final String id){
-        String menudata = menu.getText().toString();
+        String menudata = menu.getText().toString().toLowerCase();
         String costdata = cost.getText().toString();
 
         dataMap.put("Menu",menudata);
@@ -203,7 +203,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
 
                                         StringTokenizer st = new StringTokenizer(menu.getText().toString()," ");
                                         while(st.hasMoreTokens()){
-                                            docdata.put(st.nextToken(),FieldValue.arrayUnion(nesteddata));
+                                            docdata.put(st.nextToken().toLowerCase(),FieldValue.arrayUnion(nesteddata));
 
                                             db.collection("SearchListData").document("data").update(docdata).addOnCompleteListener(
                                                     new OnCompleteListener<Void>() {

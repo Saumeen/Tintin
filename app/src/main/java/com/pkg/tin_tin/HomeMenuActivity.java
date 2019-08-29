@@ -151,7 +151,7 @@ public class HomeMenuActivity extends AppCompatActivity {
     }
 
     public void addData(final String id){
-       String homemenudata = homemenu.getText().toString();
+       String homemenudata = homemenu.getText().toString().toLowerCase();
         String Quantiydata = Quantity.getText().toString();
         String costdata = cost.getText().toString();
 
@@ -176,7 +176,7 @@ public class HomeMenuActivity extends AppCompatActivity {
 
                                 StringTokenizer st = new StringTokenizer(homemenu.getText().toString()," ");
                                 while(st.hasMoreTokens()){
-                                    docdata.put(st.nextToken(), FieldValue.arrayUnion(nesteddata));
+                                    docdata.put(st.nextToken().toLowerCase(), FieldValue.arrayUnion(nesteddata));
 
                                     db.collection("SearchListData").document("data").update(docdata).addOnCompleteListener(
                                             new OnCompleteListener<Void>() {
