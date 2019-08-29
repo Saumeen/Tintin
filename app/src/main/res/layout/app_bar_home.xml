@@ -18,14 +18,15 @@
         app:backgroundTint="@color/colorPrimary"
         app:buttonGravity="bottom|top"
         app:fabAlignmentMode="center"
-        app:navigationIcon="@drawable/ic_menu"/>
+        app:navigationIcon="@drawable/ic_menu"
+        app:hideOnScroll="true"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_speech_bubble"
+        android:src="@drawable/ic_order"
         app:backgroundTint="@color/colorAccent"
         app:fabSize="normal"
         app:layout_anchor="@id/toolbar" />

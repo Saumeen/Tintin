@@ -61,6 +61,9 @@ public class HomeActivity extends AppCompatActivity
     private FirebaseFirestore db;
     private TextView name,mobileno,addres;
     private ArrayList<MenuData> menuDataArrayList;
+    private TextView user_name;
+    private TextView user_email;
+    private TextView user_addr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,17 +79,19 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         View hView = navigationView.getHeaderView(0);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        name = findViewById(R.id.home_card_name);
-        mobileno = findViewById(R.id.home_card_mobile);
-        addres = findViewById(R.id.home_card_address);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawer.openDrawer(GravityCompat.START);
+            }
+        });
+        user_email = hView.findViewById(R.id.user_email);
+        user_name = hView.findViewById(R.id.user_name);
+        user_addr = hView.findViewById(R.id.nav_address1);
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() == null) {
             Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
@@ -105,6 +110,8 @@ public class HomeActivity extends AppCompatActivity
             }
         };
         firebaseUser = firebaseAuth.getCurrentUser();
+        user_name.setText(firebaseUser.getDisplayName());
+        user_email.setText(firebaseUser.getEmail());
         db = FirebaseFirestore.getInstance();
         layoutauthentication();
         setData();
@@ -139,11 +146,8 @@ public class HomeActivity extends AppCompatActivity
                 if(task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
                     Log.d("TAG",documentSnapshot.getString("HouseFlatNo"));
-                    name.setText("Name : "+documentSnapshot.getString("Name"));
-                    addres.setText("Address : "+documentSnapshot.getString("HouseFlatNo")+","+documentSnapshot.getString("Landmark")
+                    user_addr.setText(documentSnapshot.getString("HouseFlatNo")+","+documentSnapshot.getString("Landmark")
                     +","+documentSnapshot.getString("City"));
-                    mobileno.setText("Mobile No : "+documentSnapshot.getString("MobileNo")
-                    );
 
                 }
             }
@@ -203,28 +207,6 @@ public class HomeActivity extends AppCompatActivity
             super.onBackPressed();
         }
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
