@@ -153,6 +153,7 @@ public class AddMenuActivity extends AppCompatActivity {
         datamap.put("Cost",costdata);
         datamap.put("Quantity",Quantiydata);
         datamap.put("Type",lunchdinner);
+        datamap.put("Type1","Tiffin");
 
         db.collection("users").document(id).collection("menu").add(datamap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

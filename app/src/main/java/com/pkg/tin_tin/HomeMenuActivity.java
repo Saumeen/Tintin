@@ -159,6 +159,7 @@ public class HomeMenuActivity extends AppCompatActivity {
         datamap.put("Cost",costdata);
         datamap.put("Quantity",Quantiydata);
         datamap.put("Type",lunchdinner);
+        datamap.put("Type1","Home");
 
         db.collection("SupplierUsers").document(id).collection("Menu").add(datamap)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
