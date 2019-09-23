@@ -228,7 +228,12 @@ public class HomeActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
 
-        } else if(id == R.id.nav_logout){
+        }else if (id == R.id.nav_tiffinrequest) {
+            Intent intent = new Intent(HomeActivity.this,TiffinRequestActivity.class);
+            startActivity(intent);
+
+        }
+        else if(id == R.id.nav_logout){
 
             AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             // 2. Chain together various setter methods to set the dialog characteristics

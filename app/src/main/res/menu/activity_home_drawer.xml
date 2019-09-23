@@ -20,6 +20,10 @@
             android:title="@string/menu_update"
             />
         <item
+            android:id="@+id/nav_tiffinrequest"
+            android:icon="@drawable/tiffin"
+            android:title="Tiffin Request" />
+        <item
             android:id="@+id/nav_feedback"
             android:icon="@drawable/ic_feedback_black_24dp"
             android:title="@string/menu_feedback"

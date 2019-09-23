@@ -185,6 +185,7 @@ public class TiffinMenuActivity extends AppCompatActivity {
         dataMap.put("Menu",menudata);
         dataMap.put("Cost",costdata);
         dataMap.put("Type",halffull);
+        dataMap.put("Type1","Tiffin");
 
 
         db.collection("SupplierUsers").document(id).collection("Menu").add(dataMap)

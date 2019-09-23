@@ -145,8 +145,8 @@ public class AddMenuActivity extends AppCompatActivity {
     public void addData(String id){
        String homemenudata = homemenu.getText().toString();
        String tiffinmenudata = tiffinmenu.getText().toString();
-        String Quantiydata = Quantity.getText().toString();
-        String costdata = cost.getText().toString();
+       String Quantiydata = Quantity.getText().toString();
+       String costdata = cost.getText().toString();
 
         datamap.put("Home menu",homemenudata);
         datamap.put("Tiffin Menu",tiffinmenudata);
