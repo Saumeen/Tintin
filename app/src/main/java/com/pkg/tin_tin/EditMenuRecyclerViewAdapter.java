@@ -27,13 +27,13 @@ import java.util.List;
 public class EditMenuRecyclerViewAdapter extends RecyclerView.Adapter<EditMenuRecyclerViewHolder> {
 
     EditDataActivity editDataActivity;
-    ArrayList<MenuData> userDataArrayList;
+    ArrayList<MenuDataModel> userDataArrayList;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-    public EditMenuRecyclerViewAdapter(EditDataActivity editDataActivity, ArrayList<MenuData> userDataArrayList) {
+    public EditMenuRecyclerViewAdapter(EditDataActivity editDataActivity, ArrayList<MenuDataModel> userDataArrayList) {
         this.editDataActivity = editDataActivity;
         this.userDataArrayList = userDataArrayList;
     }

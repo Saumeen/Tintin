@@ -19,15 +19,15 @@ public class TiffinRequestViewHolder extends RecyclerView.ViewHolder {
     }
     public void setType(String type){
         TextView textView = view.findViewById(R.id.menudatacard_type);
-        textView.setText("Type :"+ type);
+        textView.setText(type);
     }
     public void setMenu(String menu){
         TextView textView = view.findViewById(R.id.menudatacard_menu);
-        textView.setText("Menu : "+menu);
+        textView.setText(menu);
     }
     public void setCost(String cost){
         TextView textView = view.findViewById(R.id.menudatacard_cost);
-        textView.setText("Cost : "+cost);
+        textView.setText(cost);
     }
     public void setMobileNo(String mobile){
         TextView textView = view.findViewById(R.id.menudatacard_mobileno);
@@ -36,6 +36,10 @@ public class TiffinRequestViewHolder extends RecyclerView.ViewHolder {
     public void setCustomerName(String name){
         TextView textView = view.findViewById(R.id.menudatacard_name);
         textView.setText(name);
+    }
+    public void setAddress(String add){
+        TextView textView = view.findViewById(R.id.menudata_location);
+        textView.setText(add);
     }
 
 }

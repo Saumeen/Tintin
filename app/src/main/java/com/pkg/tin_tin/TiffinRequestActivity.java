@@ -59,9 +59,6 @@ public class TiffinRequestActivity extends AppCompatActivity {
 
     }
 
-
-
-
     private void fatchdata() {
         Query q  = db.collection("SupplierUsers").whereEqualTo("Email",firebaseUser.getEmail());
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -94,6 +91,7 @@ public class TiffinRequestActivity extends AppCompatActivity {
                         dataViewHolder.setCost(data.getCost());
                         dataViewHolder.setType(data.getType());
                         dataViewHolder.setCustomerName(data.getCustomerName());
+                        dataViewHolder.setAddress(data.getAddress());
                         dataViewHolder.done.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -146,14 +144,11 @@ public class TiffinRequestActivity extends AppCompatActivity {
                 }
         );
     }
-
     private void layoutAuth() {
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recycler_view = findViewById(R.id.recyclervire_tiffinrequest);
         recycler_view.setLayoutManager(linearLayoutManager);
         linearLayoutManager.setReverseLayout(false);
         linearLayoutManager.setSmoothScrollbarEnabled(true);
     }
-
 }

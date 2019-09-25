@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class HomeMenuRecyclerViewAdapter extends RecyclerView.Adapter<HomeMenuRecyclerViewHolder> {
 
     HomeActivity homeActivity;
-    ArrayList<MenuData> userDataArrayList;
+    ArrayList<MenuDataModel> userDataArrayList;
 
-    public HomeMenuRecyclerViewAdapter(HomeActivity homeActivity, ArrayList<MenuData> userDataArrayList) {
+    public HomeMenuRecyclerViewAdapter(HomeActivity homeActivity, ArrayList<MenuDataModel> userDataArrayList) {
         this.homeActivity = homeActivity;
         this.userDataArrayList = userDataArrayList;
     }

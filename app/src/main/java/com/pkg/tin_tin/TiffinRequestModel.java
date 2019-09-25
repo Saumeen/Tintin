@@ -6,6 +6,15 @@ public class TiffinRequestModel {
     private String Type;
     private String MobileNO;
     private String CustomerName;
+    private String Address;
+
+    public String getAddress() {
+        return Address;
+    }
+
+    public void setAddress(String address) {
+        Address = address;
+    }
 
     public String getCustomerName() {
         return CustomerName;

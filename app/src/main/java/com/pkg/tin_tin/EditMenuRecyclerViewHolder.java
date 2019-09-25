@@ -19,19 +19,19 @@ public class EditMenuRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     public void setMenu(String menu){
         TextView textView = view.findViewById(R.id.card_menu);
-        textView.setText("Menu : "+menu);
+        textView.setText(menu);
     }
     public void setCost(String cost){
         TextView textView = view.findViewById(R.id.card_cost);
-        textView.setText("Cost : "+cost);
+        textView.setText(cost);
     }
     public void setType(String type){
         TextView textView = view.findViewById(R.id.card_type);
-        textView.setText("Type : "+type);
+        textView.setText(type);
     }
     public void setQuantity(String quantity){
         TextView textView = view.findViewById(R.id.card_quant);
-        textView.setText("Quantity : "+quantity);
+        textView.setText(quantity);
     }
 
 }

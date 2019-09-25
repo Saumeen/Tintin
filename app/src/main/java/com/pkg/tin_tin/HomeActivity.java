@@ -4,14 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,33 +18,26 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nullable;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -60,10 +52,11 @@ public class HomeActivity extends AppCompatActivity
 
     private FirebaseFirestore db;
     private TextView name,mobileno,addres;
-    private ArrayList<MenuData> menuDataArrayList;
+    private ArrayList<MenuDataModel> menuDataModelArrayList;
     private TextView user_name;
     private TextView user_email;
     private TextView user_addr;
+    private FirestoreRecyclerAdapter<MenuDataModel,MenuRecyclerViewHolder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +108,13 @@ public class HomeActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         layoutauthentication();
         setData();
+        user_addr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent =new Intent(HomeActivity.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -161,7 +161,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void layoutauthentication() {
 
-        menuDataArrayList = new ArrayList<>();
+        menuDataModelArrayList = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recycler_view = findViewById(R.id.home_recyclerview);
         recycler_view.setLayoutManager(linearLayoutManager);
@@ -171,25 +171,52 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void loadMenuData(String id) {
-        db.collection("SupplierUsers").document(id).collection("Menu")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+        Query query = db.collection("SupplierUsers").document(id).collection("Menu");
+        FirestoreRecyclerOptions<MenuDataModel> options = new FirestoreRecyclerOptions.Builder<MenuDataModel>()
+                .setQuery(query, MenuDataModel.class)
+                .build();
+
+        adapter = new FirestoreRecyclerAdapter<MenuDataModel, MenuRecyclerViewHolder>(options) {
+            @NonNull
             @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                recycler_view.setAdapter(null);
-               // adapter=null;
-                for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots) {
-                    MenuData menuData = new MenuData( documentSnapshot.getString("Menu"),
-                                    documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
-                                    ,documentSnapshot.getString("Quantity"));
-                            menuDataArrayList.add(menuData);
-                            //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataArrayList);
-                    Log.d("Log---", documentSnapshot.getString("Menu") + "");
-                }
-                HomeMenuRecyclerViewAdapter adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataArrayList);
-                adapter.notifyDataSetChanged();
-                recycler_view.setAdapter(adapter);
+            public MenuRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_menu_card, parent, false);
+                return new MenuRecyclerViewHolder(view);
             }
-        });
+
+            @Override
+            protected void onBindViewHolder(@NonNull MenuRecyclerViewHolder dataViewHolder, int i, @NonNull MenuDataModel data) {
+                dataViewHolder.setMenu(data.getMenu());
+                dataViewHolder.setCost(data.getCost());
+                dataViewHolder.setType(data.getType());
+                dataViewHolder.setQuantity(data.getQuantity());
+            }
+
+
+        };
+        recycler_view.setAdapter(adapter);
+        adapter.startListening();
+
+
+//        db.collection("SupplierUsers").document(id).collection("Menu")
+//                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//                recycler_view.setAdapter(null);
+//               // adapter=null;
+//                for(QueryDocumentSnapshot documentSnapshot:queryDocumentSnapshots) {
+//                    MenuDataModel menuData = new MenuDataModel( documentSnapshot.getString("Menu"),
+//                                    documentSnapshot.getString("Cost"),  documentSnapshot.getString("Type")
+//                                    ,documentSnapshot.getString("Quantity"));
+//                            menuDataModelArrayList.add(menuData);
+//                            //adapter = new MenuFirebaseAdapter(EditDataActivity.this,menuDataModelArrayList);
+//                    Log.d("Log---", documentSnapshot.getString("Menu") + "");
+//                }
+//                HomeMenuRecyclerViewAdapter adapter = new HomeMenuRecyclerViewAdapter(HomeActivity.this, menuDataModelArrayList);
+//                adapter.notifyDataSetChanged();
+//                recycler_view.setAdapter(adapter);
+//            }
+//        });
     }
 
 
